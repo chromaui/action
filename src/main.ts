@@ -74,6 +74,47 @@ const getApi = () => {
   }
 }
 
+const getList = () => {
+  const appCode = getInput('appCode');
+
+  if (appCode) {
+    return {
+      default: {
+        appCode,
+        buildScriptName: maybe(getInput('buildScriptName')),
+        scriptName: maybe(getInput('scriptName')),
+        exec: maybe(getInput('exec')),
+        doNotStart: maybe(getInput('doNotStart')),
+        storybookPort: maybe(getInput('storybookPort')),
+        storybookUrl: maybe(getInput('storybookUrl')),
+        storybookBuildDir: maybe(getInput('storybookBuildDir')),
+        storybookHttps: maybe(getInput('storybookHttps')),
+        storybookCert: maybe(getInput('storybookCert')),
+        storybookKey: maybe(getInput('storybookKey')),
+        storybookCa: maybe(getInput('storybookCa')),
+        autoAcceptChanges: maybe(getInput('autoAcceptChanges')),
+        exitZeroOnChanges: maybe(getInput('exitZeroOnChanges'), true),
+        ignoreLastBuildOnBranch: maybe(getInput('ignoreLastBuildOnBranch')),
+        fromCI: true,
+        interactive: false,
+      },
+    };
+  } else {
+    const configLocation = getInput('config');
+
+    const list = require(configLocation);
+
+    console.log({ list, env: process.env });
+    return {};
+    // const val = Object.entries(process.env).filter(e => {
+    //   e
+    // });
+    // [`INPUT_${name.replace(/ /g, '_').toUpperCase()}`] || '';
+
+  }
+
+}
+
 async function run() {
   let deployment_id: number = NaN;
   const api = getApi();
@@ -86,87 +127,66 @@ async function run() {
   const { branch, repo, owner, sha } = commit;
 
   try {
-    const appCode = getInput('appCode');
-    const buildScriptName = getInput('buildScriptName');
-    const scriptName = getInput('scriptName');
-    const exec = getInput('exec');
-    const doNotStart = getInput('doNotStart');
-    const storybookPort = getInput('storybookPort');
-    const storybookUrl = getInput('storybookUrl');
-    const storybookBuildDir = getInput('storybookBuildDir');
-    const storybookHttps = getInput('storybookHttps');
-    const storybookCert = getInput('storybookCert');
-    const storybookKey = getInput('storybookKey');
-    const storybookCa = getInput('storybookCa');
-    const autoAcceptChanges = getInput('autoAcceptChanges');
-    const exitZeroOnChanges = getInput('exitZeroOnChanges');
-    const ignoreLastBuildOnBranch = getInput('ignoreLastBuildOnBranch');
+    const list = getList();
 
     process.env.CHROMATIC_SHA = sha;
     process.env.CHROMATIC_BRANCH = branch;
 
-    const deployment = api.repos.createDeployment({
-      repo,
-      owner,
-      ref: branch,
-      environment: 'chromatic',
-      required_contexts: [],
-      auto_merge: false,
-    }).then(deployment => {
-      deployment_id = deployment.data.id;
+    const outputs = await Object.entries(list).reduce(async (acc, [k, v]) => {
+      const existing = await acc;
 
-      return api.repos.createDeploymentStatus({
+      const deployment = api.repos.createDeployment({
         repo,
         owner,
-        deployment_id,
-        state: 'pending',
-      });
-    }).catch(e => {
-      deployment_id = NaN;
-      console.log('adding deployment to GitHub failed, You are likely on a forked repo and do not have write access.');
-    });
-
-    const chromatic = runChromatic({
-      appCode,
-      buildScriptName: maybe(buildScriptName),
-      scriptName: maybe(scriptName),
-      exec: maybe(exec),
-      doNotStart: maybe(doNotStart),
-      storybookPort: maybe(storybookPort),
-      storybookUrl: maybe(storybookUrl),
-      storybookBuildDir: maybe(storybookBuildDir),
-      storybookHttps: maybe(storybookHttps),
-      storybookCert: maybe(storybookCert),
-      storybookKey: maybe(storybookKey),
-      storybookCa: maybe(storybookCa),
-      fromCI: true,
-      interactive: false,
-      autoAcceptChanges: maybe(autoAcceptChanges),
-      exitZeroOnChanges: maybe(exitZeroOnChanges, true),
-      ignoreLastBuildOnBranch: maybe(ignoreLastBuildOnBranch),
-    });
-
-    const [{ url, code }] = await Promise.all([
-      chromatic,
-      deployment,
-    ]);
-
-    if (typeof deployment_id === 'number' && !isNaN(deployment_id)) {
-      try {
-        await api.repos.createDeploymentStatus({
+        ref: branch,
+        environment: k === 'default' ? 'chromatic' : 'chromatic ' + k,
+        required_contexts: [],
+        auto_merge: false,
+      }).then(deployment => {
+        deployment_id = deployment.data.id;
+  
+        return api.repos.createDeploymentStatus({
           repo,
           owner,
           deployment_id,
-          state: 'success',
-          environment_url: url
+          state: 'pending',
         });
-      } catch (e){
-        //
+      }).catch(e => {
+        deployment_id = NaN;
+        console.log('adding deployment to GitHub failed, You are likely on a forked repo and do not have write access.');
+      });
+  
+      const chromatic = runChromatic(v);
+  
+      const [{ url, code }] = await Promise.all([
+        chromatic,
+        deployment,
+      ]);
+  
+      if (typeof deployment_id === 'number' && !isNaN(deployment_id)) {
+        try {
+          await api.repos.createDeploymentStatus({
+            repo,
+            owner,
+            deployment_id,
+            state: 'success',
+            environment_url: url
+          });
+        } catch (e){
+          //
+        }
       }
-    }
 
-    setOutput('url', url);
-    setOutput('code', code.toString());
+      return { ...existing, [k]: { code, url } }
+    }, Promise.resolve({}));
+
+
+    Object.entries(outputs).forEach(([key, { url, code }]) => {
+      const pre = key === 'default' ? '' : key + '-';
+
+      setOutput(pre + 'url', url);
+      setOutput(pre + 'code', code.toString());
+    });
   } catch (e) {
     e.message && error(e.message);
     e.stack && error(e.stack);

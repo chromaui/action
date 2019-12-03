@@ -1,4 +1,4 @@
-name: "self test development-like"
+name: "self test development-like from config (multi)"
 on:
   pull_request:
   push:

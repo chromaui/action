@@ -128,7 +128,7 @@ async function run() {
     process.env.CHROMATIC_SHA = sha;
     process.env.CHROMATIC_BRANCH = branch;
 
-    const outputs = await Object.entries(list).reduce(async (acc, [k, v]) => {
+    const outputs: Record<string, Output> = await Object.entries(list).reduce(async (acc, [k, v]) => {
       const existing = await acc;
 
       const deployment = api.repos.createDeployment({

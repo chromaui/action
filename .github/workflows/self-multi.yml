@@ -13,6 +13,8 @@ jobs:
     - run: |
         yarn && yarn build
     - uses: ./
+      env:
+        CHROMATIC_APP_CODE: ${{ secrets.CHROMATIC_APP_CODE }}
       with: 
         token: ${{ secrets.GITHUB_TOKEN }}
         config: chromatic.config.js

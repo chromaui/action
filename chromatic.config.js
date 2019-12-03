@@ -6,6 +6,5 @@ module.exports = {
   two: {
     appCode: process.env.CHROMATIC_APP_CODE,
     storybookBuildDir: 'storybook-static-2',
-
   },
 };

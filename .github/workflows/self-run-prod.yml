@@ -1,6 +1,8 @@
 name: "self test production-like"
 on:
   pull_request:
+    branches:
+      - 'release/*'
   push:
     branches:
       - 'release/*'

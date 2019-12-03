@@ -1,3 +1,4 @@
+import path from 'path';
 import { getInput, error, setFailed, setOutput, info } from '@actions/core';
 import { GitHub, context } from "@actions/github";
 import { runTest } from 'storybook-chromatic/bin/tester/index';
@@ -102,7 +103,7 @@ const getList = () => {
   } else {
     const configLocation = getInput('config');
 
-    const list = require(configLocation);
+    const list = require(path.resolve(configLocation));
 
     console.log({ list, env: process.env });
 

@@ -105,12 +105,8 @@ const getList = () => {
     const list = require(configLocation);
 
     console.log({ list, env: process.env });
-    return {};
-    // const val = Object.entries(process.env).filter(e => {
-    //   e
-    // });
-    // [`INPUT_${name.replace(/ /g, '_').toUpperCase()}`] || '';
 
+    return list;
   }
 
 }

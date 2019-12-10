@@ -75,7 +75,7 @@ const getApi = () => {
   }
 }
 
-const getList = () => {
+const getConfigs = () => {
   const appCode = getInput('appCode');
 
   if (appCode) {
@@ -103,11 +103,15 @@ const getList = () => {
   } else {
     const configLocation = getInput('config');
 
-    const list = require(path.resolve(configLocation));
+    const config = require(path.resolve(configLocation));
 
-    console.log({ list, env: process.env });
+    if(config.appCode) {
+      return {
+        default: config,
+      };
+    }
 
-    return list;
+    return config;
   }
 
 }
@@ -124,12 +128,12 @@ async function run() {
   const { branch, repo, owner, sha } = commit;
 
   try {
-    const list = getList();
+    const configs = getConfigs();
 
     process.env.CHROMATIC_SHA = sha;
     process.env.CHROMATIC_BRANCH = branch;
 
-    const outputs: Record<string, Output> = await Object.entries(list).reduce(async (acc, [k, v]) => {
+    const outputs: Record<string, Output> = await Object.entries(configs).reduce(async (acc, [k, v]) => {
       const existing = await acc;
 
       const deployment = api.repos.createDeployment({

@@ -27,7 +27,12 @@ var _default = (0, _helperPluginUtils.declare)(api => {
   };
   return {
     name: "transform-react-jsx-self",
-    visitor
+    visitor: {
+      Program(path) {
+        path.traverse(visitor);
+      }
+
+    }
   };
 });
 

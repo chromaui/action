@@ -1,6 +1,18 @@
-# Chromatic Github Action
+# Chromatic GitHub Action
 
-## How to add an GitHub action
+This action takes care of publishing your Storybook to Chromatic and kicking off tests if they're enabled.
+
+It's a wrapper for [chromatic-cli](https://github.com/chromaui/chromatic-cli).
+
+It can:
+  - build your Storybook
+  - publish the Storybook to Chromatic
+  - report test results to log
+
+it does NOT:
+  - install dependencies
+
+## How to add a GitHub action
 
 - Create a file in your repo: `.github/workflows/chromatic.yml`
 - set it's content to:
@@ -13,9 +25,11 @@
       runs-on: ubuntu-latest
       steps:
       - uses: actions/checkout@v1
+      - run: |
+          yarn && yarn build
       - uses: chromaui/action@v1
         with: 
-          appCode: <insert the chromatic appToken here>
+          projectToken: <insert the chromatic projectToken here>
           token: ${{ secrets.GITHUB_TOKEN }}
   ```
 
@@ -25,7 +39,7 @@
 - uses: chromaui/action@v1
   with:
     token: ${{ secrets.GITHUB_TOKEN }}
-    appCode: 'Your chromatic/chroma app_code'
+    projectToken: 'Your chromatic project token'
     buildScriptName: 'The npm script that builds your Storybook [build-storybook]'
     storybookBuildDir: 'Provide a directory with your built storybook; use if you've already built your storybook'
     allowConsoleErrors: 'do not exit when runtime errors occur in storybook'
@@ -35,13 +49,13 @@
 ```
 
 
-We suggest you use a secret to hide to app-code:
+We suggest you use a secret to hide the project token:
 
 ```yaml
 - uses: chromaui/action@v1
   with:
     token: ${{ secrets.GITHUB_TOKEN }}
-    appCode: ${{ secrets.CHROMATIC_APP_CODE }}
+    projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
 ```
 
 You have to configure secrets in the settings tab (`https://github.com/{YOUR_ORGANSATION}/{YOUR_REPOSITORY}/settings/secrets`)
@@ -52,7 +66,7 @@ However if you need to be able to run this action on forked PRs you can't make i
 - uses: chromaui/action@v1
   with:
     token: ${{ secrets.GITHUB_TOKEN }}
-    appCode: appcodehere
+    projectToken: projectTokenhere
 ```
 
 ## Checkout depth
@@ -94,7 +108,7 @@ You can now validate the action by referencing the releases/v1 branch
 ```yaml
 - uses: chromaui/action@releases/v1
   with:
-    appCode: ${{ secrets.CHROMATIC_APP_CODE }}
+    projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
 ```
 
 See the [actions tab](https://github.com/chromaui/action/actions) for runs of this action! :rocket:
@@ -106,5 +120,5 @@ After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/
 ```yaml
 - uses: chromaui/action@v1
   with:
-    appCode: ${{ secrets.CHROMATIC_APP_CODE }}
+    projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
 ```

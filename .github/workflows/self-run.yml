@@ -9,11 +9,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - run: |
         yarn && yarn build
     - uses: ./
       with: 
-        appCode: 5oy3iw6rkio
+        projectToken: 5oy3iw6rkio
         token: ${{ secrets.GITHUB_TOKEN }}
         storybookBuildDir: storybook-static

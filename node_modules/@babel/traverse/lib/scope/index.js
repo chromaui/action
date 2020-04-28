@@ -30,37 +30,143 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function gatherNodeParts(node, parts) {
-  if (t.isModuleDeclaration(node)) {
-    if (node.source) {
-      gatherNodeParts(node.source, parts);
-    } else if (node.specifiers && node.specifiers.length) {
-      for (const specifier of node.specifiers) {
-        gatherNodeParts(specifier, parts);
+  switch (node == null ? void 0 : node.type) {
+    default:
+      if (t.isModuleDeclaration(node)) {
+        if (node.source) {
+          gatherNodeParts(node.source, parts);
+        } else if (node.specifiers && node.specifiers.length) {
+          for (const e of node.specifiers) gatherNodeParts(e, parts);
+        } else if (node.declaration) {
+          gatherNodeParts(node.declaration, parts);
+        }
+      } else if (t.isModuleSpecifier(node)) {
+        gatherNodeParts(node.local, parts);
+      } else if (t.isLiteral(node)) {
+        parts.push(node.value);
       }
-    } else if (node.declaration) {
-      gatherNodeParts(node.declaration, parts);
-    }
-  } else if (t.isModuleSpecifier(node)) {
-    gatherNodeParts(node.local, parts);
-  } else if (t.isMemberExpression(node)) {
-    gatherNodeParts(node.object, parts);
-    gatherNodeParts(node.property, parts);
-  } else if (t.isIdentifier(node)) {
-    parts.push(node.name);
-  } else if (t.isLiteral(node)) {
-    parts.push(node.value);
-  } else if (t.isCallExpression(node)) {
-    gatherNodeParts(node.callee, parts);
-  } else if (t.isObjectExpression(node) || t.isObjectPattern(node)) {
-    for (const prop of node.properties) {
-      gatherNodeParts(prop.key || prop.argument, parts);
-    }
-  } else if (t.isPrivateName(node)) {
-    gatherNodeParts(node.id, parts);
-  } else if (t.isThisExpression(node)) {
-    parts.push("this");
-  } else if (t.isSuper(node)) {
-    parts.push("super");
+
+      break;
+
+    case "MemberExpression":
+    case "OptionalMemberExpression":
+    case "JSXMemberExpression":
+      gatherNodeParts(node.object, parts);
+      gatherNodeParts(node.property, parts);
+      break;
+
+    case "Identifier":
+    case "JSXIdentifier":
+      parts.push(node.name);
+      break;
+
+    case "CallExpression":
+    case "OptionalCallExpression":
+    case "NewExpression":
+      gatherNodeParts(node.callee, parts);
+      break;
+
+    case "ObjectExpression":
+    case "ObjectPattern":
+      for (const e of node.properties) {
+        gatherNodeParts(e, parts);
+      }
+
+      break;
+
+    case "SpreadElement":
+    case "RestElement":
+      gatherNodeParts(node.argument, parts);
+      break;
+
+    case "ObjectProperty":
+    case "ObjectMethod":
+    case "ClassProperty":
+    case "ClassMethod":
+    case "ClassPrivateProperty":
+    case "ClassPrivateMethod":
+      gatherNodeParts(node.key, parts);
+      break;
+
+    case "ThisExpression":
+      parts.push("this");
+      break;
+
+    case "Super":
+      parts.push("super");
+      break;
+
+    case "Import":
+      parts.push("import");
+      break;
+
+    case "DoExpression":
+      parts.push("do");
+      break;
+
+    case "YieldExpression":
+      parts.push("yield");
+      gatherNodeParts(node.argument, parts);
+      break;
+
+    case "AwaitExpression":
+      parts.push("await");
+      gatherNodeParts(node.argument, parts);
+      break;
+
+    case "AssignmentExpression":
+      gatherNodeParts(node.left, parts);
+      break;
+
+    case "VariableDeclarator":
+      gatherNodeParts(node.id, parts);
+      break;
+
+    case "FunctionExpression":
+    case "FunctionDeclaration":
+    case "ClassExpression":
+    case "ClassDeclaration":
+      gatherNodeParts(node.id, parts);
+      break;
+
+    case "PrivateName":
+      gatherNodeParts(node.id, parts);
+      break;
+
+    case "ParenthesizedExpression":
+      gatherNodeParts(node.expression, parts);
+      break;
+
+    case "UnaryExpression":
+    case "UpdateExpression":
+      gatherNodeParts(node.argument, parts);
+      break;
+
+    case "MetaProperty":
+      gatherNodeParts(node.meta, parts);
+      gatherNodeParts(node.property, parts);
+      break;
+
+    case "JSXElement":
+      gatherNodeParts(node.openingElement, parts);
+      break;
+
+    case "JSXOpeningElement":
+      parts.push(node.name);
+      break;
+
+    case "JSXFragment":
+      gatherNodeParts(node.openingFragment, parts);
+      break;
+
+    case "JSXOpeningFragment":
+      parts.push("Fragment");
+      break;
+
+    case "JSXNamespacedName":
+      gatherNodeParts(node.namespace, parts);
+      gatherNodeParts(node.name, parts);
+      break;
   }
 }
 
@@ -164,6 +270,28 @@ const collectorVisitor = {
         path.scope.getBlockParent().registerDeclaration(bodyPath);
       }
     }
+  },
+
+  CatchClause(path) {
+    path.scope.registerBinding("let", path);
+  },
+
+  Function(path) {
+    if (path.isFunctionExpression() && path.has("id") && !path.get("id").node[t.NOT_LOCAL_BINDING]) {
+      path.scope.registerBinding("local", path.get("id"), path);
+    }
+
+    const params = path.get("params");
+
+    for (const param of params) {
+      path.scope.registerBinding("param", param);
+    }
+  },
+
+  ClassExpression(path) {
+    if (path.has("id") && !path.get("id").node[t.NOT_LOCAL_BINDING]) {
+      path.scope.registerBinding("local", path);
+    }
   }
 
 };
@@ -187,6 +315,7 @@ class Scope {
     this.block = node;
     this.path = path;
     this.labels = new Map();
+    this.inited = false;
   }
 
   get parent() {
@@ -240,17 +369,7 @@ class Scope {
     return `_${id}`;
   }
 
-  generateUidBasedOnNode(parent, defaultName) {
-    let node = parent;
-
-    if (t.isAssignmentExpression(parent)) {
-      node = parent.left;
-    } else if (t.isVariableDeclarator(parent)) {
-      node = parent.id;
-    } else if (t.isObjectProperty(node) || t.isObjectMethod(node)) {
-      node = node.key;
-    }
-
+  generateUidBasedOnNode(node, defaultName) {
     const parts = [];
     gatherNodeParts(node, parts);
     let id = parts.join("$");
@@ -258,8 +377,8 @@ class Scope {
     return this.generateUid(id.slice(0, 20));
   }
 
-  generateUidIdentifierBasedOnNode(parent, defaultName) {
-    return t.identifier(this.generateUidBasedOnNode(parent, defaultName));
+  generateUidIdentifierBasedOnNode(node, defaultName) {
+    return t.identifier(this.generateUidBasedOnNode(node, defaultName));
   }
 
   isStatic(node) {
@@ -451,6 +570,8 @@ class Scope {
     const ids = path.getOuterBindingIdentifiers(true);
 
     for (const name of Object.keys(ids)) {
+      parent.references[name] = true;
+
       for (const id of ids[name]) {
         const local = this.getOwnBinding(name);
 
@@ -458,8 +579,6 @@ class Scope {
           if (local.identifier === id) continue;
           this.checkBlockScopedCollisions(local, kind, name, id);
         }
-
-        parent.references[name] = true;
 
         if (local) {
           this.registerConstantViolation(bindingPath);
@@ -500,13 +619,7 @@ class Scope {
   }
 
   hasReference(name) {
-    let scope = this;
-
-    do {
-      if (scope.references[name]) return true;
-    } while (scope = scope.parent);
-
-    return false;
+    return !!this.getProgramParent().references[name];
   }
 
   isPure(node, constantsOnly) {
@@ -586,7 +699,10 @@ class Scope {
   }
 
   init() {
-    if (!this.references) this.crawl();
+    if (!this.inited) {
+      this.inited = true;
+      this.crawl();
+    }
   }
 
   crawl() {
@@ -597,26 +713,11 @@ class Scope {
     this.uids = Object.create(null);
     this.data = Object.create(null);
 
-    if (path.isLoop()) {
-      for (const key of t.FOR_INIT_KEYS) {
-        const node = path.get(key);
-        if (node.isBlockScoped()) this.registerBinding(node.node.kind, node);
-      }
-    }
-
-    if (path.isFunctionExpression() && path.has("id")) {
-      if (!path.get("id").node[t.NOT_LOCAL_BINDING]) {
+    if (path.isFunction()) {
+      if (path.isFunctionExpression() && path.has("id") && !path.get("id").node[t.NOT_LOCAL_BINDING]) {
         this.registerBinding("local", path.get("id"), path);
       }
-    }
 
-    if (path.isClassExpression() && path.has("id")) {
-      if (!path.get("id").node[t.NOT_LOCAL_BINDING]) {
-        this.registerBinding("local", path);
-      }
-    }
-
-    if (path.isFunction()) {
       const params = path.get("params");
 
       for (const param of params) {
@@ -624,12 +725,8 @@ class Scope {
       }
     }
 
-    if (path.isCatchClause()) {
-      this.registerBinding("let", path);
-    }
-
-    const parent = this.getProgramParent();
-    if (parent.crawling) return;
+    const programParent = this.getProgramParent();
+    if (programParent.crawling) return;
     const state = {
       references: [],
       constantViolations: [],
@@ -641,11 +738,9 @@ class Scope {
 
     for (const path of state.assignments) {
       const ids = path.getBindingIdentifiers();
-      let programParent;
 
       for (const name of Object.keys(ids)) {
         if (path.scope.getBinding(name)) continue;
-        programParent = programParent || path.scope.getProgramParent();
         programParent.addGlobal(ids[name]);
       }
 
@@ -658,7 +753,7 @@ class Scope {
       if (binding) {
         binding.reference(ref);
       } else {
-        ref.scope.getProgramParent().addGlobal(ref.node);
+        programParent.addGlobal(ref.node);
       }
     }
 

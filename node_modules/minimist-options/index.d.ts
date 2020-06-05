@@ -1,6 +1,6 @@
 import {Opts as MinimistOptions} from 'minimist';
 
-export type OptionType = 'string' | 'boolean' | 'number' | 'array';
+export type OptionType = 'string' | 'boolean' | 'number' | 'array' | 'string-array' | 'boolean-array' | 'number-array';
 
 export interface BaseOption<
 	TypeOptionType extends OptionType,
@@ -25,23 +25,27 @@ export interface BaseOption<
 export type StringOption = BaseOption<'string', string>;
 export type BooleanOption = BaseOption<'boolean', boolean>;
 export type NumberOption = BaseOption<'number', number>;
-export type ArrayOption<ArrayContentType = unknown> = BaseOption<
-	'array',
-	ReadonlyArray<ArrayContentType>
->;
+export type DefaultArrayOption = BaseOption<'array', ReadonlyArray<string>>;
+export type StringArrayOption = BaseOption<'string-array', ReadonlyArray<string>>;
+export type BooleanArrayOption = BaseOption<'boolean-array', ReadonlyArray<boolean>>;
+export type NumberArrayOption = BaseOption<'number-array', ReadonlyArray<number>>;
+
 type MinimistOption = NonNullable<
 	| MinimistOptions['stopEarly']
 	| MinimistOptions['unknown']
 	| MinimistOptions['--']
 >;
 
-export type Options<ArrayOptionContentType = unknown> = {
+export type Options = {
 	[key: string]:
 		| OptionType
 		| StringOption
 		| BooleanOption
 		| NumberOption
-		| ArrayOption<ArrayOptionContentType>
+		| DefaultArrayOption
+		| StringArrayOption
+		| BooleanArrayOption
+		| NumberArrayOption
 		| MinimistOption;  // Workaround for https://github.com/microsoft/TypeScript/issues/17867
 };
 

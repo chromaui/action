@@ -79,7 +79,7 @@ module.exports = class V8ToIstanbul {
     if (isAbsolute(candidatePath)) {
       this.path = candidatePath
     } else {
-      this.path = resolve(dirname(this.path), sourcePath)
+      this.path = resolve(dirname(this.path), candidatePath)
     }
   }
 

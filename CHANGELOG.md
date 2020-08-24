@@ -1,3 +1,10 @@
+# v1 (?)
+
+#### 🚀  Version 1
+
+- FIX problem with build missing failing in chromatic-cli
+- UPGRADE to latest dependencies, including chromatic-cli
+
 # v1 (Wed Feb 20 2020)
 
 #### 🚀  Version 1

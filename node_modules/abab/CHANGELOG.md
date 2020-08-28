@@ -1,3 +1,7 @@
+## 2.0.4
+
+-   Dependency updates
+
 ## 2.0.3
 
 -   Use standard wording for BSD-3-Clause license (@PhilippWendler)

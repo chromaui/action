@@ -26,7 +26,7 @@ it does NOT:
       steps:
       - uses: actions/checkout@v1
       - run: |
-          yarn && yarn build
+          yarn
       - uses: chromaui/action@v1
         with: 
           projectToken: <insert the chromatic projectToken here>

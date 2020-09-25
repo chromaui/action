@@ -4,6 +4,9 @@ This action takes care of publishing your Storybook to Chromatic and kicking off
 
 It's a wrapper for [chromatic-cli](https://github.com/chromaui/chromatic-cli).
 
+> Note: the chromatic-cli needs a git project with history in order to function properly
+> when using this action ensure you combine it with actions/checkout@v1 or v2 with fetch-depth:0
+
 It can:
   - build your Storybook
   - publish the Storybook to Chromatic

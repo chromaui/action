@@ -1,0 +1,26 @@
+{
+  "name": "date-format",
+  "version": "0.0.2",
+  "description": "formatting Date objects as strings since 2013",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nomiddlename/date-format.git"
+  },
+  "keywords": [
+    "date",
+    "format",
+    "string"
+  ],
+  "author": "Gareth Jones <gareth.jones@sensis.com.au>",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "bf59015ab6c9e86454b179374f29debbdb403522",
+  "devDependencies": {
+    "should": "~1.2.2",
+    "mocha": "~1.12.0"
+  }
+}

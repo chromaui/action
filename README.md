@@ -10,10 +10,12 @@ In your git repository, create a file `.github/workflows/chromatic.yml` with the
 
 ```yml
 name: 'Chromatic'
-on: push
+on:
+  push:
+    branches: [ master ]
 
 jobs:
-  test:
+  deploy-storybook:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1

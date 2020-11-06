@@ -15,7 +15,7 @@ on:
     branches: [ master ]
 
 jobs:
-  deploy-storybook:
+  chromatic-deployment:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1

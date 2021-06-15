@@ -1,0 +1,44 @@
+{
+  "name": "junit-report-builder",
+  "version": "2.1.0",
+  "description": "Aimed at making it easier to build Jenkins compatible JUnit XML reports in plugins for testing frameworks",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "grunt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/davidparsson/junit-report-builder.git"
+  },
+  "keywords": [
+    "junit",
+    "xunit",
+    "report",
+    "builder"
+  ],
+  "author": "David Pärsson <david@parsson.se>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/davidparsson/junit-report-builder/issues"
+  },
+  "homepage": "https://github.com/davidparsson/junit-report-builder",
+  "engines": {
+    "node": ">=4"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.11.2",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-jasmine-nodejs": "1.4.0",
+    "grunt-release": "^0.12.0",
+    "jit-grunt": "^0.9.1",
+    "rimraf": "^2.3.3",
+    "time-grunt": "^1.2.1"
+  },
+  "dependencies": {
+    "date-format": "0.0.2",
+    "lodash": "^4.17.15",
+    "make-dir": "^1.3.0",
+    "xmlbuilder": "^10.0.0"
+  }
+}

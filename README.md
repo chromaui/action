@@ -116,14 +116,11 @@ jobs:
           echo 'nodeLinker: "node-modules"' >> .yarnrc.yml
           yarn rebuild
           yarn build
-      - name: Build Storybook
-        run: yarn storybook-build
       - name: Publish Chromatic
         uses: chromaui/action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-          storybookBuildDir: packages/storybook/dist
           exitOnceUploaded: true
 
 ```

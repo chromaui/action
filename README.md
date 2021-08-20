@@ -95,6 +95,39 @@ jobs:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
 ```
 
+### Yarn 2 Support
+[Yarn 2](https://yarnpkg.com/getting-started/install) uses a different installation mechanism that removes the node_modules directory. This will cause an error in the action when the library looks for the storybook package. A workaround for this issue is to use the [Yarn 2 nodeLinker configuration](https://yarnpkg.com/configuration/yarnrc#nodeLinker) only in CI to fall back to the `node-modules` option. This workaround appends the `nodeLinker` argument to the `.yarnrc.yml` file in CI before building.
+
+An example workflow is provided below:
+```
+name: 'Chromatic'
+
+on: push
+
+jobs:
+  chromatic-deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install dependencies
+        run: |
+          echo 'nodeLinker: "node-modules"' >> .yarnrc.yml
+          yarn rebuild
+          yarn build
+      - name: Build Storybook
+        run: yarn storybook-build
+      - name: Publish Chromatic
+        uses: chromaui/action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          storybookBuildDir: packages/storybook/dist
+          exitOnceUploaded: true
+
+```
+
 ### Outputs
 
 | Name           | Type   | Description                                                                                                                       |

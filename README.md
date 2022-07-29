@@ -116,7 +116,7 @@ on:
 
 ## Checkout depth
 
-Version 2 of the `actions/checkout` action will only checkout a single commit without history by default. Chromatic needs the full git history in order to track changes over time. Set `fetch-depth: 0` to enable this. See [actions/checkout](https://github.com/actions/checkout#readme) for details.
+Version 3 of the `actions/checkout` action will only checkout a single commit without history by default. Chromatic needs the full git history in order to track changes over time. Set `fetch-depth: 0` to enable this. See [actions/checkout](https://github.com/actions/checkout#readme) for details.
 
 ## Issues and support
 

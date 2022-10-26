@@ -1,0 +1,144 @@
+name: Publish to Chromatic
+author: Chroma Software, Inc.
+description: 'Publish your Storybook to Chromatic and run visual regression tests'
+branding:
+  icon: 'aperture'
+  color: 'orange'
+
+inputs:
+  token:
+    description: 'Your github token'
+    required: false
+  projectToken:
+    description: 'Your chromatic project token'
+    required: true
+  workingDir:
+    description: 'Working directory for the package.json file'
+    required: false
+  appCode:
+    description: 'Deprecated, please use projectToken instead'
+    required: false
+  buildScriptName:
+    description: 'The npm script that builds your Storybook [build-storybook]'
+    required: false
+  scriptName:
+    description: 'The npm script that starts your Storybook [storybook]'
+    required: false
+  exec:
+    description: 'Alternatively, a full command to run to start your storybook'
+    required: false
+  skip:
+    description: 'Skip Chromatic tests, but mark the commit as passing'
+    required: false
+  dryRun:
+    description: 'Run without actually publishing to Chromatic'
+    required: false
+  forceRebuild:
+    description: 'Do not skip build when a rebuild is detected'
+    required: false
+  storybookBaseDir:
+    description: 'Relative path from repository root to Storybook project root'
+    required: false
+  storybookConfigDir:
+    description: 'Relative path from where you run Chromatic to your Storybook config directory'
+    required: false
+  only:
+    description: 'Deprecated, replaced by onlyStoryNames'
+    required: false
+  onlyChanged:
+    description: 'Enables TurboSnap: Only run stories affected by files changed since the baseline build'
+    required: false
+  onlyStoryNames:
+    description: 'Only run a single story or a subset of stories by their name'
+    required: false
+  onlyStoryFiles:
+    description: 'Only run a single story or a subset of stories by their filename(s)'
+    required: false
+  externals:
+    description: 'Disable TurboSnap when any of these files have changed since the baseline build'
+    required: false
+  untraced:
+    description: 'Disregard these files and their dependencies when tracing dependent stories for TurboSnap'
+    required: false
+  traceChanged:
+    description: 'Print dependency trace for changed files to affected story files; set to "expanded" to list individual modules'
+    required: false
+  doNotStart:
+    description: 'Do not attempt to start or build; use if your Storybook is already running'
+    required: false
+  diagnostics:
+    description: 'Write process context information to chromatic-diagnostics.json'
+    required: false
+  debug:
+    description: 'Output verbose debugging information.'
+    required: false
+  storybookBuildDir:
+    description: 'Provide a directory with your built storybook; use if you have already built your storybook'
+    required: false
+  storybookCa:
+    description: 'Use if Storybook is running on https (auto detected from -s, if set)'
+    required: false
+  storybookCert:
+    description: 'Use if Storybook is running on https (auto detected from -s, if set)'
+    required: false
+  storybookHttps:
+    description: 'Use if Storybook is running on https (auto detected from -s, if set)'
+    required: false
+  storybookKey:
+    description: 'Use if Storybook is running on https (auto detected from -s, if set)'
+    required: false
+  storybookPort:
+    description: 'What port is your Storybook running on (auto detected from -s, if set)'
+    required: false
+  storybookUrl:
+    description: 'Storybook is already running at (external) url (implies -S)'
+    required: false
+  preserveMissing:
+    description: 'Deprecated, use onlyChanged, onlyStoryNames or onlyStoryFiles instead'
+    required: false
+  autoAcceptChanges:
+    description: 'Automatically accept all changes in chromatic: boolean or branchname'
+    required: false
+  allowConsoleErrors:
+    description: 'Do not exit when runtime errors occur in storybook'
+    required: false
+  exitZeroOnChanges:
+    description: 'Positive exit of action even when there are changes: boolean or branchname'
+    required: false
+  exitOnceUploaded:
+    description: 'Exit with 0 once the built version has been sent to chromatic: boolean or branchname'
+    required: false
+  ignoreLastBuildOnBranch:
+    description: 'Do not use the last build on this branch as a baseline if it is no longer in history (i.e. branch was rebased)'
+    required: false
+  zip:
+    description: 'Publish your Storybook to Chromatic as a single zip file instead of individual content files'
+    required: false
+
+outputs:
+  code:
+    description: 'The exit code for the current run of the Chromatic CLI'
+  url:
+    description: 'An alias for the build URL (e.g. https://www.chromatic.com/build?appId=<app id goes here>&number=<build number>)'
+  buildUrl:
+    description: 'The build URL (e.g. https://www.chromatic.com/build?appId=<app id goes here>&number=<build number>)'
+  storybookUrl:
+    description: 'The Storybook preview URL for your current branch / Pull Request (e.g. https://<app id goes here>-<branch hash>.chromatic.com/)'
+  specCount:
+    description: 'The number of stories in the published Storybook'
+  componentCount:
+    description: 'The number of components in the published Storybook'
+  testCount:
+    description: 'The number of tests on the build'
+  changeCount:
+    description: 'The number of tests with visual changes, including any inherited changes (e.g. due to TurboSnap)'
+  errorCount:
+    description: 'The number of tests with error(s), including any inherited errors (e.g. due to TurboSnap)'
+  actualCaptureCount:
+    description: 'The number of captured snapshots'
+  inheritedCaptureCount:
+    description: 'The number of inherited (not captured) snapshots (e.g. due to TurboSnap)'
+
+runs:
+  main: action/main.js
+  using: node12

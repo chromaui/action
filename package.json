@@ -1,6 +1,6 @@
 {
   "name": "chromatic",
-  "version": "11.27.0",
+  "version": "11.28.0",
   "description": "Automate visual testing across browsers. Gather UI feedback. Versioned documentation.",
   "keywords": [
     "storybook-addon",
@@ -179,6 +179,7 @@
     "util-deprecate": "^1.0.2",
     "uuid": "^8.3.2",
     "vite": "^4.4.9",
+    "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^2.0.5",
     "why-is-node-running": "^2.1.2",
     "xxhash-wasm": "^1.0.2",

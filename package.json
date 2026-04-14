@@ -1,6 +1,6 @@
 {
   "name": "chromatic",
-  "version": "16.2.0",
+  "version": "16.3.0",
   "description": "Automate visual testing across browsers. Gather UI feedback. Versioned documentation.",
   "keywords": [
     "storybook-addon",
@@ -194,13 +194,17 @@
   },
   "peerDependencies": {
     "@chromatic-com/cypress": "^0.*.* || ^1.0.0",
-    "@chromatic-com/playwright": "^0.*.* || ^1.0.0"
+    "@chromatic-com/playwright": "^0.*.* || ^1.0.0",
+    "@chromatic-com/vitest": "^0.*.* || ^1.0.0"
   },
   "peerDependenciesMeta": {
     "@chromatic-com/cypress": {
       "optional": true
     },
     "@chromatic-com/playwright": {
+      "optional": true
+    },
+    "@chromatic-com/vitest": {
       "optional": true
     }
   },

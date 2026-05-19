@@ -1,6 +1,6 @@
 {
   "name": "chromatic",
-  "version": "16.10.1",
+  "version": "17.0.0",
   "description": "Automate visual testing across browsers. Gather UI feedback. Versioned documentation.",
   "keywords": [
     "storybook-addon",
@@ -220,6 +220,9 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=22.0.0"
   },
   "docs": "https://www.chromatic.com/docs/cli",
   "storybook": {

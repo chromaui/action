@@ -1,6 +1,6 @@
 {
   "name": "chromatic",
-  "version": "18.9.1",
+  "version": "18.9.2",
   "description": "Automate visual testing across browsers. Gather UI feedback. Versioned documentation.",
   "keywords": [
     "storybook-addon",
@@ -71,7 +71,7 @@
   "resolutions": {
     "any-observable": "^0.5.1",
     "es-toolkit": "1.46.0",
-    "lodash": "4.17.21",
+    "lodash": "4.18.1",
     "@types/minimatch": "5.1.2"
   },
   "dependenciesMeta": {

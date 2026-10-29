@@ -1,6 +1,6 @@
 {
   "name": "chromatic",
-  "version": "18.13.4",
+  "version": "18.13.5",
   "description": "Automate visual testing across browsers. Gather UI feedback. Versioned documentation.",
   "keywords": [
     "storybook-addon",
@@ -145,7 +145,7 @@
     "formdata-node": "^6.0.3",
     "fs-extra": "^10.0.0",
     "globals": "^15.3.0",
-    "https-proxy-agent": "^7.0.2",
+    "https-proxy-agent": "^9.1.0",
     "jiti": "^2.7.0",
     "json5": "^2.2.3",
     "jsonfile": "^6.0.1",
@@ -180,7 +180,7 @@
     "tsdown": "^0.21.8",
     "typescript": "^5.2.2",
     "typescript-eslint": "^8.5.8",
-    "uuid": "^8.3.2",
+    "uuid": "^14.0.3",
     "vite": "^8.0.3",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^4.1.2",

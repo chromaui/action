@@ -1,6 +1,6 @@
 {
   "name": "chromatic",
-  "version": "18.15.1",
+  "version": "18.15.2",
   "description": "Automate visual testing across browsers. Gather UI feedback. Versioned documentation.",
   "keywords": [
     "storybook-addon",
@@ -126,7 +126,7 @@
     "chalk": "^4.1.2",
     "clean-package": "^2.2.0",
     "cpy": "^8.1.2",
-    "cross-env": "^7.0.3",
+    "cross-env": "^10.1.0",
     "cross-spawn": "^7.0.2",
     "debug": "^4.3.2",
     "dotenv": "^17.4.2",
@@ -167,10 +167,11 @@
     "prettier": "^3.2.5",
     "prompts": "^2.4.2",
     "read-package-up": "^12.0.0",
+    "simple-plist": "^1.4.0",
     "snyk-nodejs-lockfile-parser": "2.10.4",
     "snyk-nodejs-plugin": "2.2.1",
     "storybook": "^10.6.5",
-    "string-argv": "^0.3.1",
+    "string-argv": "^0.4.0",
     "strip-ansi": "^7.1.0",
     "tmp-promise": "3.0.2",
     "ts-dedent": "^1.0.0",
@@ -178,7 +179,7 @@
     "typescript": "^5.2.2",
     "typescript-eslint": "^8.5.8",
     "uuid": "^14.0.3",
-    "vite": "^8.0.3",
+    "vite": "^8.3.8",
     "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^5.0.5",
     "wrap-ansi": "^10.0.0",
@@ -186,7 +187,7 @@
     "xxhash-wasm": "^1.0.2",
     "yarn-or-npm": "^3.0.1",
     "yazl": "patch:yazl@npm%3A3.3.1#~/.yarn/patches/yazl-npm-3.3.1-2e7f415791.patch",
-    "zen-observable": "^0.8.15",
+    "zen-observable": "^0.10.0",
     "zod": "^3.22.2"
   },
   "peerDependencies": {
